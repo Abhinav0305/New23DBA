@@ -84,9 +84,6 @@ public class PdfClass {
             }catch (DocumentException e) {
                 status=false;
                 Log.e("PDF exception abc",e.getMessage());
-            } catch (IOException e) {
-                status=false;
-                Log.e("PDF exception",e.getMessage());
             }
         }
         return status;

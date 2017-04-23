@@ -31,5 +31,8 @@
         <activity android:name=".ApplyLeaveActivity"/>
         <activity android:name=".ManagerApproveActivity"/>
         <activity android:name=".LeaveActivity"/>
+        <activity android:name=".BookingRoomActivity"/>
+        <activity android:name=".DeleteBookingActivity"/>
+        <activity android:name=".SickLeaveActivity"/>
     </application>
 </manifest>
