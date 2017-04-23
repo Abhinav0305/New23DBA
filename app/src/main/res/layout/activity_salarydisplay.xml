@@ -5,4 +5,6 @@
     android:stretchColumns="*"
     android:id="@+id/rootTable">
 
+    <include layout="@layout/tool_bar"
+        android:id="@+id/SalaryDisplayBar"></include>
 </TableLayout>

@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,36 +52,43 @@ public class ManagerApproveActivity extends AppCompatActivity {
         tv.setTextSize(30);
         tv.setTypeface(null, Typeface.BOLD);
         tv.setText("Manage Leave");
+        tv.setTextColor(Color.WHITE);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(tv);
         tableLayout = (TableLayout) findViewById(R.id.tblLayout); // table layout typecasting...
         tableLayout.setColumnStretchable(0, true); //first column
         tableLayout.setColumnStretchable(1, true); //second column
-        tableLayout.setColumnStretchable(2, true); //third column
+        //tableLayout.setColumnStretchable(2, true); third column
         tableLayout.setColumnStretchable(3, false); //third column
         dbAdapter = new DatabaseAdapter();
-        managerID = getIntent().getExtras().getString("manager_id");
+        try{
+            managerID = getIntent().getExtras().getString("manager_id");
+        }catch (NullPointerException e){
+            managerID="";
+        }
         list = dbAdapter.getLeavesOfEmployeeUnderManager(getApplicationContext(), managerID);
         dynamicViewElement();
     }
 
     public void dynamicViewElement() {
+
         newTR = new TableRow(ManagerApproveActivity.this);
         btnNewView = new Button(ManagerApproveActivity.this);
         newTxtID = new TextView(ManagerApproveActivity.this);
         newTxtName = new TextView(ManagerApproveActivity.this);
-        newTxtLeaveID = new TextView(ManagerApproveActivity.this);
+        //newTxtLeaveID = new TextView(ManagerApproveActivity.this);
         /** start setting values of dyamic View Elements **/
 
 
         btnNewView.setText("View");
+        btnNewView.setGravity(Gravity.RIGHT);
         /** end setting values of dyamic View Elements **/
 
         /** start appending dynamic textviews and buttons in tablerow **/
         newTR.addView(newTxtID);
         newTR.addView(newTxtName);
         newTR.addView(btnNewView);
-        newTR.addView(newTxtLeaveID);
+        //newTR.addView(newTxtLeaveID);
         /** start appending dynamic textviews and buttons in tablerow **/
         if (list != null) {
             for (final Leave leave : list) {
@@ -88,9 +96,11 @@ public class ManagerApproveActivity extends AppCompatActivity {
                 TextView tvID = new TextView(ManagerApproveActivity.this);
                 tvID.setText(leave.getEmployeeID());
                 tvID.setTextSize(20);
+                tvID.setTypeface(null, Typeface.BOLD);
                 TextView tvName = new TextView(ManagerApproveActivity.this);
                 tvName.setText(leave.getEmployee().getEmployeeName());
                 tvName.setTextSize(20);
+                tvName.setTypeface(null, Typeface.BOLD);
                 final TextView tvLeaveID = new TextView(ManagerApproveActivity.this);
                 tvLeaveID.setText(Long.toString(leave.getLeaveID()));
                 tvLeaveID.setTextSize(20);
@@ -99,17 +109,26 @@ public class ManagerApproveActivity extends AppCompatActivity {
                     public void onClick(View view){
                         Intent i=new Intent(ManagerApproveActivity.this,LeaveActivity.class);
                         i.putExtra("leave",leave);
+                        i.putExtra("manager_id",managerID);
                         startActivity(i);
                     }
                 });
                 rowView.setText("view");
+                rowView.setTypeface(null, Typeface.BOLD);
                 tmp.addView(tvID);
                 tmp.addView(tvName);
-                tmp.addView(tvLeaveID);
+                //tmp.addView(tvLeaveID);
                 tmp.addView(rowView);
                 tableLayout.addView(tmp);
             }
         }
     }
-
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        Intent i=new Intent(ManagerApproveActivity.this,ManagerApproveActivity.class);
+        i.putExtra("manager_id",managerID);
+        startActivity(i);
+        finish();
+    }
 }

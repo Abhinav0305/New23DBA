@@ -12,6 +12,7 @@ import java.util.List;
 
 import nav.library.new23db.constant.SQLConstant;
 import nav.library.new23db.model.Address;
+import nav.library.new23db.model.Booking;
 import nav.library.new23db.model.Department;
 import nav.library.new23db.model.Employee;
 import nav.library.new23db.model.Leave;
@@ -120,6 +121,25 @@ public class DatabaseAdapter {
         sqLiteDatabase.close();
         return status;
     }
+    public boolean checkDuplicateLeave(Context context,String employeeID,String fromDate,String endDate){  //Workaround
+        boolean status=false;
+        sqLiteDatabase=DatabaseHelper.getInstance(context).getReadableDatabase();
+        Cursor cursor=null;
+        try{
+            cursor=sqLiteDatabase.rawQuery(SQLConstant.duplicate_leave,new String[]{employeeID,fromDate,endDate});
+            cursor.moveToFirst();
+            if(cursor.getCount()>0){
+                status=cursor.getInt(0)>0?true:false;
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        }catch(SQLException e){
+            status=true;
+            cursor.close();
+            sqLiteDatabase.close();
+        }
+        return status;
+    }
     public long addLeaves(Leave leave, Context context){
         long value=0;
         sqLiteDatabase=DatabaseHelper.getInstance(context).getWritableDatabase();
@@ -209,5 +229,118 @@ public class DatabaseAdapter {
             sqLiteDatabase.close();
             return false;
         }
+    }
+    public long addBooking(Context context,Booking booking){
+        long value=0;
+        ContentValues contentValues=new ContentValues();
+        if(booking!=null && !checkBooking(context,booking)){
+            try {
+                sqLiteDatabase=DatabaseHelper.getInstance(context).getWritableDatabase();
+                contentValues.put("BOOK_DATE",booking.getBookinDate());
+                contentValues.put("EMP_ID",booking.getEmpID());
+                contentValues.put("ROOM_ID",booking.getRoomID());
+                contentValues.put("START_TIME",booking.getStartTime());
+                contentValues.put("END_TIME",booking.getEndTime());
+                contentValues.put("ISRESERVED",booking.getIsReserved());
+                value=sqLiteDatabase.insert(SQLConstant.Booking,null,contentValues);
+                sqLiteDatabase.close();
+            }catch (SQLException e){
+                Log.e("Error ",e.getMessage());
+                sqLiteDatabase.close();
+                value=0;
+            }
+        }
+        return value;
+    }
+    public boolean checkBooking(Context context,Booking booking){
+        boolean status=false;
+        Cursor cursor=null;
+        try{
+            sqLiteDatabase=DatabaseHelper.getInstance(context).getReadableDatabase();
+            cursor=sqLiteDatabase.rawQuery(SQLConstant.duplicate_booking,new String[]{booking.getBookinDate(),booking.getStartTime(),booking.getEndTime(),booking.getRoomID()});
+            cursor.moveToFirst();
+            if(cursor.getCount()>0){
+                status=true;
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        }catch (SQLException e){
+            Log.d("exception",e.getMessage());
+            cursor.close();
+            sqLiteDatabase.close();
+        }
+        return status;
+    }
+    public List<Booking> getBookings(Context context,String employeeID){
+        List<Booking> bookings=new ArrayList<Booking>();
+        Cursor cursor=null;
+        try{
+            sqLiteDatabase=DatabaseHelper.getInstance(context).getReadableDatabase();
+            cursor=sqLiteDatabase.rawQuery(SQLConstant.get_booking,new String[]{employeeID});
+            cursor.moveToFirst();
+            if(cursor.getCount()>0){  //select book_id,room_id,book_date,start_time,end_time from booking where emp_id=?
+                while (cursor.isAfterLast()==false){
+                    Booking tmp=new Booking();
+                    tmp.setBookingID(cursor.getLong(0));
+                    tmp.setRoomID(Integer.toString(cursor.getInt(1)));
+                    tmp.setBookinDate(cursor.getString(2));
+                    tmp.setStartTime(cursor.getString(3));
+                    tmp.setEndTime(cursor.getString(4));
+                    tmp.setEmpID(employeeID);
+                    bookings.add(tmp);
+                    cursor.moveToNext();
+                }
+                cursor.close();
+                sqLiteDatabase.close();
+            }
+        }catch (SQLException e){
+            bookings=null;
+            cursor.close();
+            sqLiteDatabase.close();
+        }
+        return bookings;
+    }
+    public int deleteBoking(Context context,Booking booking){
+        int value=0;
+        sqLiteDatabase=DatabaseHelper.getInstance(context).getWritableDatabase();
+        if(booking!=null){
+            try{
+                value=sqLiteDatabase.delete(SQLConstant.Booking,SQLConstant.whereBooking+"="+booking.getBookingID(),null);
+            }catch (SQLException e){
+                sqLiteDatabase.close();
+                value=0;
+            }
+        }
+        return value;
+    }
+    public List<Leave> getLeaveofEmployee(Context context,String employeeID){
+        Cursor cursor=null;
+        List<Leave> leaves=new ArrayList<Leave>();
+        sqLiteDatabase=DatabaseHelper.getInstance(context).getWritableDatabase();
+        try{
+            cursor=sqLiteDatabase.rawQuery(SQLConstant.leaveOfEmployees,new String[]{employeeID});
+            cursor.moveToFirst();//leave_id,emp_id,from_Date,end_date,date_applied,leave_type,approve
+            if(cursor.getCount()>0){
+                while (cursor.isAfterLast()==false){
+                    Leave leave=new Leave();
+                    leave.setLeaveID(cursor.getLong(0));
+                    leave.setApproved(cursor.getString(6));
+                    leave.setLeaveType(cursor.getString(5));
+                    leave.setEmployeeID(cursor.getString(1));
+                    leave.setFromDATE(cursor.getString(2));
+                    leave.setToDATE(cursor.getString(3));
+                    leave.setDateApplied(cursor.getString(4));
+                    leaves.add(leave);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        }catch (SQLException e){
+            cursor.close();
+            sqLiteDatabase.close();
+            leaves=null;
+        }
+        return leaves;
     }
 }

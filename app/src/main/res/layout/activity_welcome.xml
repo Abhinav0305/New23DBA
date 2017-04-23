@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:titleTextColor="@color/white"
         app:layout_scrollFlags="scroll|enterAlways"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -34,14 +35,14 @@
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="160dp"
         android:id="@+id/spaces2"/>
     <ExpandableListView
         android:id="@+id/simple_expandable_listview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:divider="@color/colorPrimary"
-        android:dividerHeight="1dp"
+        android:dividerHeight="2dp"
         android:layout_below="@id/textDEmployee">
     </ExpandableListView>
 

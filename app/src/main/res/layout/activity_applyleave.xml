@@ -22,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sick Leave"
+            android:textStyle="bold"
             android:typeface="serif" />
 
         <RadioButton
@@ -29,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Paid Leave"
+            android:textStyle="bold"
             android:typeface="monospace" />
     </RadioGroup>
 
@@ -49,7 +51,12 @@
             android:inputType="number"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:hint="No of Days"/>
+            android:hint="No of Days"
+            android:background="@drawable/border"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:singleLine="true"/>
     </android.support.design.widget.TextInputLayout>
 
     <View android:id="@+id/fakeView2"
@@ -68,7 +75,7 @@
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textCursorDrawable="@null"
-        android:singleLine="true"
+        android:textStyle="bold"
         android:layout_alignParentStart="true" />
 
     <EditText
@@ -84,7 +91,7 @@
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textCursorDrawable="@null"
-        android:singleLine="true"/>
+        android:textStyle="bold"/>
 
     <View
         android:layout_width="0dp"
@@ -106,8 +113,7 @@
             android:background="@drawable/border"
             android:padding="10dp"
             android:textColor="@android:color/black"
-            android:textCursorDrawable="@null"
-            android:singleLine="true"/>
+            android:textCursorDrawable="@null"/>
 
 
     <Button
@@ -117,6 +123,7 @@
         android:text="Submit"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
+        android:textColor="@color/white"
         android:background="@color/colorPrimary"/>
 
 

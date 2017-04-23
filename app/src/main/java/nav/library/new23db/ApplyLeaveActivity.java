@@ -1,6 +1,7 @@
 package nav.library.new23db;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -62,6 +63,7 @@ public class ApplyLeaveActivity extends AppCompatActivity implements View.OnClic
         toolView.setText("Leave ");
         toolView.setTextSize(30);
         toolView.setTypeface(null, Typeface.BOLD);
+        toolView.setTextColor(Color.WHITE);
         dbAdapter=new DatabaseAdapter();
         employeeID=getIntent().getExtras().getString("employee_id");
         ed_comments=(EditText) findViewById(R.id.emp_comment);
@@ -129,7 +131,6 @@ public class ApplyLeaveActivity extends AppCompatActivity implements View.OnClic
             cal.set(fromDatePickerDialog.getDatePicker().getYear(),fromDatePickerDialog.getDatePicker().getMonth(),fromDatePickerDialog.getDatePicker().getDayOfMonth(),0,0);
             cal.add(Calendar.DAY_OF_YEAR,Integer.parseInt(leave_no.getText().toString())-1);
             long afterTwoMonthsinMilli=cal.getTimeInMillis();
-
             toDatePickerDialog.getDatePicker().setMinDate(afterTwoMonthsinMilli);
             toDatePickerDialog.getDatePicker().setMaxDate(afterTwoMonthsinMilli);
             toDatePickerDialog.show();
@@ -163,11 +164,15 @@ public class ApplyLeaveActivity extends AppCompatActivity implements View.OnClic
             leave.setEmployeeReasons(ed_comments.getText().toString());
             leave.setLeaveType(leavetype);
             leave.setNumberOfDays(Integer.parseInt(leave_no.getText().toString()));
-            long value=dbAdapter.addLeaves(leave,getApplicationContext());
-            if(value>0){
-                Toast.makeText(ApplyLeaveActivity.this,"Succesfully leave application sent to manager",Toast.LENGTH_LONG).show();
+            if(dbAdapter.checkDuplicateLeave(getApplicationContext(),leave.getEmployeeID(),leave.getFromDATE(),leave.getToDATE())){
+                Toast.makeText(ApplyLeaveActivity.this,"Leave for this date already applied ",Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(ApplyLeaveActivity.this,"Failed",Toast.LENGTH_LONG).show();
+                long value=dbAdapter.addLeaves(leave,getApplicationContext());
+                if(value>0){
+                    Toast.makeText(ApplyLeaveActivity.this,"Succesfully leave application sent to manager",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(ApplyLeaveActivity.this,"Failed",Toast.LENGTH_LONG).show();
+                }
             }
             ed_comments.setText("");
             to_date.setText("");

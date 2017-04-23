@@ -1,12 +1,15 @@
 package nav.library.new23db;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +40,7 @@ public class LeaveActivity extends AppCompatActivity {
     private Button approve,reject;
     private LeaveDetails leaveDetails;
     private DatabaseAdapter dbAdapter;
+    private String managerID;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -47,11 +51,13 @@ public class LeaveActivity extends AppCompatActivity {
         tv.setText("Employee Leave");
         tv.setTextSize(30);
         tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextColor(Color.WHITE);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(tv);
         leave=(Leave) getIntent().getExtras().get("leave");
         dbAdapter=new DatabaseAdapter();
         leaveDetails=dbAdapter.getLeaveDetails(getApplicationContext(),leave.getEmployee().getEmployeeID());
+        managerID=getIntent().getExtras().getString("manager_id");
         rg=(RadioGroup) findViewById(R.id.rdGroup);
         rb1=(RadioButton) findViewById(R.id.sickRadio);
         rb2=(RadioButton) findViewById(R.id.paidRadio);

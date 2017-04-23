@@ -2,8 +2,10 @@ package nav.library.new23db;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -46,6 +49,7 @@ public class SalaryActivity extends AppCompatActivity {
     private Employee employee;
     private DatabaseAdapter dbadapter;
     private Toolbar toolbar;
+    private EditText text1;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -54,8 +58,13 @@ public class SalaryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         TextView title=new TextView(this);
         title.setText("Salary");
+        title.setTextColor(Color.WHITE);
         title.setTextSize(30);
         title.setTypeface(null, Typeface.BOLD);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(title);
+        text1=(EditText) findViewById(R.id.textview1);
+        text1.setEnabled(false);
         mySpinner=(Spinner) findViewById(R.id.spinner1);
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.year));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -2,6 +2,7 @@ package nav.library.new23db;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,6 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
         TextView toolView=new TextView(this);
         toolView.setText("Home Page");
         toolView.setTextSize(30);
+        toolView.setTextColor(Color.WHITE);
         toolView.setTypeface(null, Typeface.BOLD);
         toolbar=(Toolbar) findViewById(R.id.welcometoolbar);
         setSupportActionBar(toolbar);
@@ -80,7 +83,6 @@ public class WelcomeActivity extends AppCompatActivity {
         //Arraylist for childs
         List<String> child1 = new ArrayList<String>();
         List<String> child2 = new ArrayList<String>();
-        List<String> child3 = new ArrayList<String>();
 
         // Hash map for both header and child
         HashMap<String, List<String>> hashMap = new HashMap<String, List<String>>();
@@ -88,7 +90,6 @@ public class WelcomeActivity extends AppCompatActivity {
         //Adding headers to list
         header.add("Leaves");
         header.add("Bookings");
-        header.add("Rooms");
 
         header=Arrays.asList(getResources().getStringArray(R.array.yelp));
         if(is_manager){
@@ -97,11 +98,9 @@ public class WelcomeActivity extends AppCompatActivity {
             child1=Arrays.asList(getResources().getStringArray(R.array.nonmanager));
         }
         child2=Arrays.asList(getResources().getStringArray(R.array.Book));
-        child3=Arrays.asList(getResources().getStringArray(R.array.Room));
 
         hashMap.put(header.get(0),child1);
         hashMap.put(header.get(1),child2);
-        hashMap.put(header.get(2),child3);
 
         adapter = new ExpandableListAdapter(WelcomeActivity.this, header, hashMap);
 
@@ -117,9 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public boolean onGroupClick(ExpandableListView listview, View view,
                                         int group_pos, long id) {
 
-                Toast.makeText(WelcomeActivity.this,
-                        "You clicked : " + adapter.getGroup(group_pos),
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(WelcomeActivity.this, "You clicked : " + adapter.getGroup(group_pos), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -158,12 +155,11 @@ public class WelcomeActivity extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         case 1:
+                            intent=new Intent(WelcomeActivity.this,SickLeaveActivity.class);
+                            intent.putExtra("employee_id",employeeID);
+                            startActivity(intent);
                             break;
                         case 2:
-                            break;
-                        case 3:
-                            break;
-                        case 4:
                             intent=new Intent(WelcomeActivity.this,ManagerApproveActivity.class);
                             intent.putExtra("employee_id",employeeID);
                             intent.putExtra("manager_id",managerID);
@@ -173,21 +169,17 @@ public class WelcomeActivity extends AppCompatActivity {
                 }else if(groupPos==1){
                     switch (childPos){
                         case 0:
+                            intent=new Intent(WelcomeActivity.this,BookingRoomActivity.class);
+                            intent.putExtra("employee_id",employeeID);
+                            startActivity(intent);
                             break;
                         case 1:
-                            break;
-                        case 2:
-                            break;
-                    }
-                }else if(groupPos==2){
-                    switch (childPos){
-                        case 0:
-                            break;
-                        case 1:
+                            intent=new Intent(WelcomeActivity.this,DeleteBookingActivity.class);
+                            intent.putExtra("employee_id",employeeID);
+                            startActivity(intent);
                             break;
                     }
                 }
-
                 return false;
             }
         });
